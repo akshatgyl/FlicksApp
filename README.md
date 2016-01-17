@@ -23,7 +23,7 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- Added Rated R or Rated PG-13 images and review ratings!
 
 ## Video Walkthrough 
 
