@@ -139,7 +139,16 @@ class MovieViewController: UIViewController, UITableViewDataSource, UITableViewD
         
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         
-        cell.posterView.setImageWithURL(posterUrl!)
+        if let posterPath = movie["poster_path"] as? String {
+            let posterBaseUrl = "http://image.tmdb.org/t/p/w500"
+            let posterUrl = NSURL(string: posterBaseUrl + posterPath)
+            cell.posterView.setImageWithURL(posterUrl!)
+        }
+        else {
+            // No poster image. Can either set to nil (no image) or a default movie poster image
+            // that you include as an asset
+            cell.posterView.image = nil
+        }
         cell.titleLabel.text = title
         cell.overviewLabel.text = overview
         if (rRated) {
