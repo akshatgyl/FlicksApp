@@ -8,16 +8,16 @@
 
 import UIKit
 import AFNetworking
+import MBProgressHUD
 
 class MovieViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating {
 
     @IBOutlet weak var tableView: UITableView!
-    var movies : [NSDictionary]?
-    var filteredMovies : [NSDictionary]?
+    
+    var movies : NSMutableArray = []
+    var filteredMovies  = []
     var refresh : UIRefreshControl = UIRefreshControl()
     
-    
-    @IBOutlet weak var loadingState: UIActivityIndicatorView!
     @IBOutlet var searchController: UISearchController!
     
     
@@ -27,6 +27,7 @@ class MovieViewController: UIViewController, UITableViewDataSource, UITableViewD
         tableView.dataSource = self
         tableView.delegate = self
         
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
@@ -51,13 +52,15 @@ class MovieViewController: UIViewController, UITableViewDataSource, UITableViewD
                     if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
                         data, options:[]) as? NSDictionary {
                             NSLog("response: \(responseDictionary)")
-                            self.movies = responseDictionary["results"] as? [NSDictionary]
+                            self.movies = responseDictionary["results"] as! NSMutableArray
+                            MBProgressHUD.hideHUDForView(self.view, animated: true)
                             self.tableView.reloadData()
                     }
                 }
         });
         task.resume()
         
+        filteredMovies = movies
         searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.sizeToFit()
         tableView.tableHeaderView = searchController.searchBar
@@ -74,23 +77,22 @@ class MovieViewController: UIViewController, UITableViewDataSource, UITableViewD
         
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
-        loadingState.hidden = false
-        loadingState.startAnimating()
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
-        loadingState.stopAnimating()
-        loadingState.hidden = true
-    }
     func updateSearchResultsForSearchController(searchController: UISearchController) {
-        
-        let searchText = searchController.searchBar.text
-        filterContent(searchText!)
-        tableView.reloadData()
-        
+        if let searchText = searchController.searchBar.text {
+//            filteredMovies = searchText.isEmpty ? movies : movies!.filter({(dataString: String) -> Bool in
+//                return dataString.rangeOfString(searchText, options: .CaseInsensitiveSearch) as! (String != nil
+//            })
+            let searchPredicate = NSPredicate(format: "title CONTAINS[c] %@", searchText)
+            let filteredResult = movies.filteredArrayUsingPredicate(searchPredicate)
+            if filteredResult.count != 0 {
+                filteredMovies = filteredResult
+            } else {
+                filteredMovies = []
+            }
+            
+            
+            tableView.reloadData()
+        }
     }
     
     func refresh(sender:AnyObject)
@@ -106,24 +108,26 @@ class MovieViewController: UIViewController, UITableViewDataSource, UITableViewD
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if (searchController.active) {
-            return filteredMovies!.count
-        }
-        
-        if let movies = movies {
-            return movies.count
+        if (filteredMovies.count != 0) {
+            return filteredMovies.count
         } else {
-            return 0
+            if (searchController.active && searchController.searchBar.text != "") {
+                return 0
+            } else {
+                return movies.count
+            }
         }
+    
+//      return movies.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let movie : NSDictionary
-        if (searchController.active) {
-            movie = filteredMovies![indexPath.row]
+        var movie : NSDictionary
+        if (filteredMovies.count != 0) {
+            movie = filteredMovies[indexPath.row] as! NSDictionary
         } else {
-            movie = movies![indexPath.row]
+            movie = movies[indexPath.row] as! NSDictionary
         }
         let title = movie["title"] as! String
         let overview = movie["overview"] as! String
@@ -132,7 +136,7 @@ class MovieViewController: UIViewController, UITableViewDataSource, UITableViewD
 //        let backdropPath = movie["backdrop_path"] as! String
         
 //        let backdropUrl = NSURL(string: baseUrl + backdropPath)
-        let posterUrl = NSURL(string: baseUrl + posterPath)
+//        let posterUrl = NSURL(string: baseUrl + posterPath)
         
         let rRated = movie["adult"] as! Bool
         let ratings = movie["vote_average"] as! Double
@@ -143,6 +147,10 @@ class MovieViewController: UIViewController, UITableViewDataSource, UITableViewD
             let posterBaseUrl = "http://image.tmdb.org/t/p/w500"
             let posterUrl = NSURL(string: posterBaseUrl + posterPath)
             cell.posterView.setImageWithURL(posterUrl!)
+            cell.posterView.alpha = 0
+            UIView.animateWithDuration(1, delay: 0, options: UIViewAnimationOptions.TransitionCurlUp, animations: { () -> Void in
+                cell.posterView.alpha = 1
+                }, completion: nil)
         }
         else {
             // No poster image. Can either set to nil (no image) or a default movie poster image
@@ -166,28 +174,28 @@ class MovieViewController: UIViewController, UITableViewDataSource, UITableViewD
         
     }
     
-    func filterContent(searchText : String, scope: String = "Title") {
-        
-        self.filteredMovies = self.movies?.filter({( movieList : NSDictionary) -> Bool in
-        
-            let Field = (scope == "Title")
-            let searchTitle = movieList["title"] as! String!
-            let stringMatch = searchTitle.rangeOfString(searchText)
-            return Field && (stringMatch != nil)
-            
-        })
-
-    }
+//    func filterContent(searchText : String, scope: String = "Title") {
+//        
+//        self.filteredMovies = self.movies?.filter({( movieList : NSDictionary) -> Bool in
+//        
+//            let Field = (scope == "Title")
+//            let searchTitle = movieList["title"] as! String!
+//            let stringMatch = searchTitle.rangeOfString(searchText)
+//            return Field && (stringMatch != nil)
+//            
+//        })
+//
+//    }
     
-    func searchDisplayController(controller: UISearchController, shouldReloadTableForSearchString searchString: String?) -> Bool {
-        self.filterContent(searchString!, scope: "Title")
-        return true
-    }
-    
-    func searchDisplayController(controller: UISearchController, shouldReloadTableForSearchScope searchOption: Int) -> Bool {
-        self.filterContent((self.searchController?.searchBar.text)!, scope: "Title")
-        return true
-    }
+//    func searchDisplayController(controller: UISearchController, shouldReloadTableForSearchString searchString: String?) -> Bool {
+//        self.filterContent(searchString!, scope: "Title")
+//        return true
+//    }
+//    
+//    func searchDisplayController(controller: UISearchController, shouldReloadTableForSearchScope searchOption: Int) -> Bool {
+//        self.filterContent((self.searchController?.searchBar.text)!, scope: "Title")
+//        return true
+//    }
 
 }
 

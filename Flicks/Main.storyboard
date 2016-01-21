@@ -88,20 +88,11 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" id="6a7-ap-QD5">
-                                <rect key="frame" x="142" y="295" width="37" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <color key="backgroundColor" red="1" green="0.0187217119" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="tintColor" red="1" green="0.0187217119" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="1"/>
-                            </activityIndicatorView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="loadingState" destination="6a7-ap-QD5" id="pI6-ff-k6M"/>
                         <outlet property="searchController" destination="nbC-6E-JAk" id="j3A-5W-3Kr"/>
                         <outlet property="searchDisplayController" destination="nbC-6E-JAk" id="dIb-rR-165"/>
                         <outlet property="tableView" destination="fcf-wc-ARH" id="MGU-UV-HdI"/>
