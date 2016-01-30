@@ -14,14 +14,20 @@ PODS:
   - AFNetworking/Serialization (3.0.4)
   - AFNetworking/UIKit (3.0.4):
     - AFNetworking/NSURLSession
+  - DGElasticPullToRefresh (1.0.3)
+  - IQKeyboardManager (3.3.6)
   - MBProgressHUD (0.9.2)
 
 DEPENDENCIES:
   - AFNetworking
+  - DGElasticPullToRefresh
+  - IQKeyboardManager
   - MBProgressHUD
 
 SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
+  DGElasticPullToRefresh: 040f39ae69840b3261d163fe6735c5901bf851e9
+  IQKeyboardManager: 037cf3aec1d0a045108859a47818714eb1bfc149
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
 
 COCOAPODS: 0.39.0

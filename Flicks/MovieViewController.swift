@@ -9,6 +9,7 @@
 import UIKit
 import AFNetworking
 import MBProgressHUD
+import DGElasticPullToRefresh
 
 class MovieViewController: UIViewController, UISearchResultsUpdating, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
@@ -24,6 +25,8 @@ class MovieViewController: UIViewController, UISearchResultsUpdating, UICollecti
     @IBOutlet var searchController: UISearchController!
     @IBOutlet weak var errorView: UIView!
     
+    var endPoint : String!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,9 +41,13 @@ class MovieViewController: UIViewController, UISearchResultsUpdating, UICollecti
             self.flowLayout.sectionInset = UIEdgeInsetsMake(0, 5, 0, 5)
             self.errorView.hidden = true
         
+        let logo = UIImage(named: "flicks.png")
+        let imageView = UIImageView(image:logo)
+        self.navigationItem.titleView = imageView
+        
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
+        let url = NSURL(string:"https://api.themoviedb.org/3/movie/\(endPoint)?api_key=\(apiKey)")
         let request = NSURLRequest(URL: url!)
         let session = NSURLSession(
             configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
@@ -74,40 +81,32 @@ class MovieViewController: UIViewController, UISearchResultsUpdating, UICollecti
             
             self.searchController.searchResultsUpdater = self
             self.searchController.dimsBackgroundDuringPresentation = false
-            
-            
-            self.refresh = UIRefreshControl()
-            self.refresh.attributedTitle = NSAttributedString(string: "Pull to refresh")
-            self.refresh.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
-            self.collectionView.addSubview(self.refresh)
-    }
-    
-    
-    
-    
-    
-    
-    func refresh(sender:AnyObject) {
 
-        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
-        let request = NSURLRequest(URL: url!)
-        let session = NSURLSession(
-            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
-            delegate:nil,
-            delegateQueue:NSOperationQueue.mainQueue()
-        )
-        
-        let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
-            completionHandler: { (data, response, error) in
-                self.collectionView.reloadData()
-                self.refresh.endRefreshing()	
-        });
-        task.resume()
+        let loadingView = DGElasticPullToRefreshLoadingViewCircle()
+        loadingView.tintColor = UIColor(red: 78/255.0, green: 221/255.0, blue: 200/255.0, alpha: 1.0)
+        collectionView.dg_addPullToRefreshWithActionHandler({ [weak self] () -> Void in
+            let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
+            let url = NSURL(string:"https://api.themoviedb.org/3/movie/\(self!.endPoint)?api_key=\(apiKey)")
+            let request = NSURLRequest(URL: url!)
+            let session = NSURLSession(
+                configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
+                delegate:nil,
+                delegateQueue:NSOperationQueue.mainQueue()
+            )
+            
+            let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
+                completionHandler: { (data, response, error) in
+                    self!.collectionView.reloadData()
+                    self!.refresh.endRefreshing()
+            });
+            task.resume()
+            // Do not forget to call dg_stopLoading() at the end
+            self?.collectionView.dg_stopLoading()
+            }, loadingView: loadingView)
+        collectionView.dg_setPullToRefreshFillColor(UIColor(red: 57/255.0, green: 67/255.0, blue: 89/255.0, alpha: 1.0))
+        collectionView.dg_setPullToRefreshBackgroundColor(tableView.backgroundColor!)
+    
     }
-
-    
-    
     
     
     override func didReceiveMemoryWarning() {
@@ -184,6 +183,10 @@ class MovieViewController: UIViewController, UISearchResultsUpdating, UICollecti
         }
     }
     
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        print("11")
+    }
+    
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         if let searchText = searchController.searchBar.text {
@@ -202,14 +205,32 @@ class MovieViewController: UIViewController, UISearchResultsUpdating, UICollecti
     
     
     @IBAction func searchButton(sender: AnyObject) {
-        searchController.searchBar.becomeFirstResponder()
+//        searchController.searchBar.becomeFirstResponder()
         searchController.active = true
         searchController.searchBar.hidden = false
+        searchController.becomeFirstResponder()
     }
     
-    @IBAction func hideKeyboard(sender: AnyObject) {
-        self.searchController.searchBar.resignFirstResponder()
+//    @IBAction func hideKeyboard(sender: AnyObject) {
+//        self.searchController.searchBar.resignFirstResponder()
+//    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let cell = sender as! CollectionMovieCell
+        let indexPath = collectionView.indexPathForCell(cell)
+        let movie : NSDictionary
+        if (filteredMovies.count != 0) {
+            movie = filteredMovies[indexPath!.row] as! NSDictionary
+        } else {
+            movie = movies[indexPath!.row] as! NSDictionary
+        }
+        
+        let destinationViewController = segue.destinationViewController as! DetailsViewController
+        destinationViewController.movie = movie
+        
     }
+    
+    
 }
 
 //movies with same genre

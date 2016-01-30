@@ -85,9 +85,13 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-Flicks/AFNetworking.framework"
+  install_framework "Pods-Flicks/DGElasticPullToRefresh.framework"
+  install_framework "Pods-Flicks/IQKeyboardManager.framework"
   install_framework "Pods-Flicks/MBProgressHUD.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-Flicks/AFNetworking.framework"
+  install_framework "Pods-Flicks/DGElasticPullToRefresh.framework"
+  install_framework "Pods-Flicks/IQKeyboardManager.framework"
   install_framework "Pods-Flicks/MBProgressHUD.framework"
 fi
