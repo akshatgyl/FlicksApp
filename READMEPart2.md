@@ -24,6 +24,7 @@ The following **additional** features are implemented:
 - [x] custom pull to refresh cocoa pod
 - [x] Added an upcoming movies tab.
 - [x] Added webview to watch trailers of the movie
+- [x] Added dark themed keyboard.
 
 
 ## Video Walkthrough 
