@@ -49,7 +49,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <animations/>
                                                 </imageView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="94D5252D-03C0-486B-9674-1515EDFA361B" id="acq-Lj-xer">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="E95D0FA5-BBC0-42D9-97C0-2F4112033F89" id="acq-Lj-xer">
                                                     <rect key="frame" x="159" y="44" width="20" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <animations/>
@@ -207,7 +207,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <webView contentMode="scaleToFill" id="VVU-G9-yqZ">
-                                                <rect key="frame" x="40" y="148" width="240" height="128"/>
+                                                <rect key="frame" x="20" y="144" width="280" height="167"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <animations/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -327,7 +327,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="94D5252D-03C0-486B-9674-1515EDFA361B" width="256" height="256">
+        <image name="E95D0FA5-BBC0-42D9-97C0-2F4112033F89" width="256" height="256">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOjtYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISgrLjQ3VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA

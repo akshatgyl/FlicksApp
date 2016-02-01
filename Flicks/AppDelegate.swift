@@ -16,11 +16,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-//        // Override point for customization after application launch.
-//        IQKeyboardManager.sharedManager().enable = true
-//        IQKeyboardManager.sharedManager().shouldResignOnTouchOutside = true
-//        IQKeyboardManager.sharedManager().overrideKeyboardAppearance = true
-//        IQKeyboardManager.sharedManager().keyboardAppearance = UIKeyboardAppearance.Dark
+        // Override point for customization after application launch.
+        IQKeyboardManager.sharedManager().enable = true
+        IQKeyboardManager.sharedManager().shouldResignOnTouchOutside = true
+        IQKeyboardManager.sharedManager().overrideKeyboardAppearance = true
+        IQKeyboardManager.sharedManager().keyboardAppearance = UIKeyboardAppearance.Dark
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
